@@ -253,8 +253,7 @@ static ALCenum ALCwinmmPlayback_open(ALCwinmmPlayback *self, const ALCchar *devi
     UINT DeviceID;
     MMRESULT res;
 
-    if(VECTOR_SIZE(PlaybackDevices) == 0)
-        ProbePlaybackDevices();
+    ProbePlaybackDevices();
 
     // Find the Device ID matching the deviceName if valid
 #define MATCH_DEVNAME(iter) (!alstr_empty(*(iter)) && \
@@ -560,8 +559,7 @@ static ALCenum ALCwinmmCapture_open(ALCwinmmCapture *self, const ALCchar *name)
     MMRESULT res;
     ALuint i;
 
-    if(VECTOR_SIZE(CaptureDevices) == 0)
-        ProbeCaptureDevices();
+    ProbeCaptureDevices();
 
     // Find the Device ID matching the deviceName if valid
 #define MATCH_DEVNAME(iter) (!alstr_empty(*(iter)) && (!name || alstr_cmp_cstr(*iter, name) == 0))

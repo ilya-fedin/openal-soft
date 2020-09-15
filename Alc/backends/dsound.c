@@ -360,8 +360,8 @@ static ALCenum ALCdsoundPlayback_open(ALCdsoundPlayback *self, const ALCchar *de
     const GUID *guid = NULL;
     HRESULT hr, hrcom;
 
-    if(VECTOR_SIZE(PlaybackDevices) == 0)
     {
+        clear_devlist(&PlaybackDevices);
         /* Initialize COM to prevent name truncation */
         hrcom = CoInitialize(NULL);
         hr = DirectSoundEnumerateW(DSoundEnumDevices, &PlaybackDevices);
@@ -723,8 +723,8 @@ static ALCenum ALCdsoundCapture_open(ALCdsoundCapture *self, const ALCchar *devi
     HRESULT hr, hrcom;
     ALuint samples;
 
-    if(VECTOR_SIZE(CaptureDevices) == 0)
     {
+        clear_devlist(&CaptureDevices);
         /* Initialize COM to prevent name truncation */
         hrcom = CoInitialize(NULL);
         hr = DirectSoundCaptureEnumerateW(DSoundEnumDevices, &CaptureDevices);
