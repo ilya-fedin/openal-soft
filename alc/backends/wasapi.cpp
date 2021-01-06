@@ -117,6 +117,8 @@ constexpr DWORD X51RearMask{MaskFromTopBits(X5DOT1REAR)};
 constexpr DWORD X61Mask{MaskFromTopBits(X6DOT1)};
 constexpr DWORD X71Mask{MaskFromTopBits(X7DOT1)};
 
+constexpr ALCchar CommunicationDeviceName[] = "Default Communication Device\0";
+
 #define DEVNAME_HEAD "OpenAL Soft on "
 
 
@@ -804,7 +806,9 @@ void WasapiPlayback::open(const char *name)
 
     if(SUCCEEDED(hr))
     {
-        if(name)
+        if(name && al::strcasecmp(name, CommunicationDeviceName) == 0)
+            mDevId = name;
+        else if(name)
         {
             if(PlaybackDevices.empty())
                 pushMessage(MsgType::EnumeratePlayback).wait();
@@ -858,6 +862,8 @@ HRESULT WasapiPlayback::openProxy()
         ComPtr<IMMDeviceEnumerator> enumerator{static_cast<IMMDeviceEnumerator*>(ptr)};
         if(mDevId.empty())
             hr = enumerator->GetDefaultAudioEndpoint(eRender, eMultimedia, mMMDev.getPtr());
+        else if(al::strcasecmp(mDevId.c_str(), CommunicationDeviceName) == 0)
+            hr = enumerator->GetDefaultAudioEndpoint(eRender, eCommunications, mMMDev.getPtr());
         else
             hr = enumerator->GetDevice(mDevId.c_str(), mMMDev.getPtr());
     }
@@ -1372,7 +1378,9 @@ void WasapiCapture::open(const char *name)
 
     if(SUCCEEDED(hr))
     {
-        if(name)
+        if(name && al::strcasecmp(name, CommunicationDeviceName) == 0)
+            mDevId = name;
+        else if(name)
         {
             if(CaptureDevices.empty())
                 pushMessage(MsgType::EnumerateCapture).wait();
@@ -1434,6 +1442,8 @@ HRESULT WasapiCapture::openProxy()
         ComPtr<IMMDeviceEnumerator> enumerator{static_cast<IMMDeviceEnumerator*>(ptr)};
         if(mDevId.empty())
             hr = enumerator->GetDefaultAudioEndpoint(eCapture, eMultimedia, mMMDev.getPtr());
+        else if(al::strcasecmp(mDevId.c_str(), CommunicationDeviceName) == 0)
+            hr = enumerator->GetDefaultAudioEndpoint(eCapture, eCommunications, mMMDev.getPtr());
         else
             hr = enumerator->GetDevice(mDevId.c_str(), mMMDev.getPtr());
     }
